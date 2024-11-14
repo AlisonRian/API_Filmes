@@ -5,14 +5,14 @@ import jakarta.validation.ConstraintValidatorContext;
 
 import java.time.LocalDate;
 
-public class AnoValidator implements ConstraintValidator<AnoValido, Long> {
+public class AnoValidator implements ConstraintValidator<AnoValido, Integer> {
     @Override
     public void initialize(AnoValido constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
 
     @Override
-    public boolean isValid(Long value, ConstraintValidatorContext constraintValidatorContext) {
+    public boolean isValid(Integer value, ConstraintValidatorContext constraintValidatorContext) {
         return value != null && value >= 1895 && value <= LocalDate.now().getYear();
     }
 }

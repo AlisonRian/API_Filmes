@@ -29,6 +29,10 @@ public class Filme extends EntidadeAbstrata {
     @NotBlank(message = "O nome não pode ficar em branco.")
     private String classificacao;
 
+    @NotBlank(message = "A sinopse não pode ficar em branco.")
+    @Size(min = 10, max = 100, message = "A sinopse deve ter entre 10 e 100 caracteres.")
+    private String sinopse;
+
     @AnoValido
     private int anoLancamento;
 

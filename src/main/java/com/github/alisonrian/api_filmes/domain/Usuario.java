@@ -2,6 +2,9 @@ package com.github.alisonrian.api_filmes.domain;
 
 import com.github.alisonrian.api_filmes.validation.senha.SenhaValida;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +15,9 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
@@ -26,6 +32,12 @@ public class Usuario extends EntidadeAbstrata{
     private String nome;
     @SenhaValida
     private String senha;
+    @ManyToMany
+    @JoinTable(name="usuario_filme",
+        joinColumns = @JoinColumn(name="usuario_id"),
+        inverseJoinColumns = @JoinColumn(name="filme_id")
+    )
+    private List<Filme> favoritos = new ArrayList<>();
 //          Ter entre 8 e 20 caracteres.
 //        Incluir pelo menos uma letra maiúscula.
 //        Incluir pelo menos uma letra minúscula.
