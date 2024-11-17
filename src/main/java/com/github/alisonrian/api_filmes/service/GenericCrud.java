@@ -17,7 +17,6 @@ public abstract class GenericCrud<T, ID, REPO extends JpaRepository<T,ID>> imple
     }
     @Override
     public void delete(ID id){
-
         repository.deleteById(id);
     }
     @Override

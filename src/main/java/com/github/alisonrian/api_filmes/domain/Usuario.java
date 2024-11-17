@@ -30,17 +30,20 @@ public class Usuario extends EntidadeAbstrata{
     @NotBlank(message = "O nome não pode ficar em branco.")
     @Size(min = 3, max = 50, message = "O nome deve ter entre 3 a 50 caracteres")
     private String nome;
+
     @SenhaValida
     private String senha;
+    //          Ter entre 8 e 20 caracteres.
+//        Incluir pelo menos uma letra maiúscula.
+//        Incluir pelo menos uma letra minúscula.
+//        Incluir pelo menos um dígito.
+//        Incluir pelo menos um caractere especial (por exemplo, @, #, !, etc.).
+
     @ManyToMany
     @JoinTable(name="usuario_filme",
         joinColumns = @JoinColumn(name="usuario_id"),
         inverseJoinColumns = @JoinColumn(name="filme_id")
     )
     private List<Filme> favoritos = new ArrayList<>();
-//          Ter entre 8 e 20 caracteres.
-//        Incluir pelo menos uma letra maiúscula.
-//        Incluir pelo menos uma letra minúscula.
-//        Incluir pelo menos um dígito.
-//        Incluir pelo menos um caractere especial (por exemplo, @, #, !, etc.).
+
 }
