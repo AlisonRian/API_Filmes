@@ -1,5 +1,6 @@
 package com.github.alisonrian.api_filmes.controller;
 
+import com.github.alisonrian.api_filmes.config.FileStorageProperties;
 import com.github.alisonrian.api_filmes.domain.Filme;
 import com.github.alisonrian.api_filmes.dto.FilmeRequestDto;
 import com.github.alisonrian.api_filmes.dto.FilmeResponseDto;
@@ -24,7 +25,7 @@ import java.net.URI;
 public class FilmeController {
     private final FilmeService filmeService;
     private final ModelMapper mapper;
-
+    private final FileStorageController fileStorageController;
     @PostMapping
     public ResponseEntity<FilmeResponseDto> create(@Valid @RequestBody FilmeRequestDto filmeRequestDto) {
         Filme created = filmeService.create(convertToEntity(filmeRequestDto));

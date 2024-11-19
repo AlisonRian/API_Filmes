@@ -77,4 +77,12 @@ class UsuarioServiceTest {
         when(usuarioRepository.findAll(Pageable.unpaged())).thenReturn(paginaUsuarios);
         assertEquals(2, usuarioService.findAll(Pageable.unpaged()).getSize());
     }
+    @Test
+    public void editarUsuario(){
+        usuarioInvalido.setId(2L);
+        usuarioValido.setId(1L);
+        when(usuarioRepository.saveAndFlush(usuarioInvalido)).thenReturn(usuarioInvalido);
+        Usuario resultado = usuarioService.update(usuarioInvalido, 1L);
+        assertThat(resultado).isEqualTo(usuarioInvalido);
+    }
 }
