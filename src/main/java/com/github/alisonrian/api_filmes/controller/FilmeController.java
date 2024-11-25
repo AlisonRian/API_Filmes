@@ -4,7 +4,9 @@ import com.github.alisonrian.api_filmes.config.FileStorageProperties;
 import com.github.alisonrian.api_filmes.domain.Filme;
 import com.github.alisonrian.api_filmes.dto.FilmeRequestDto;
 import com.github.alisonrian.api_filmes.dto.FilmeResponseDto;
+import com.github.alisonrian.api_filmes.dto.UsuarioResponseDto;
 import com.github.alisonrian.api_filmes.service.FilmeService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,15 +20,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/filmes")
+@RequestMapping("/filmes/")
 public class FilmeController {
     private final FilmeService filmeService;
     private final ModelMapper mapper;
     private final FileStorageController fileStorageController;
     @PostMapping
+    @Operation(description = "Cadastrar um novo filme.")
     public ResponseEntity<FilmeResponseDto> create(@Valid @RequestBody FilmeRequestDto filmeRequestDto) {
         Filme created = filmeService.create(convertToEntity(filmeRequestDto));
         URI location = ServletUriComponentsBuilder
@@ -38,18 +44,32 @@ public class FilmeController {
     }
 
     @GetMapping
+    @Operation(description = "Listar todos os filmes cadastrados.")
     public Page<FilmeResponseDto> listAll(Pageable pageable){
         Page<Filme> filmePage = filmeService.findAll(pageable);
-        return filmePage.map(this::convertToDto);
+        return filmePage.map(filme ->{
+            FilmeResponseDto filmeDto = convertToDto(filme);
+            filmeDto.add(linkTo(methodOn(FilmeController.class).findById(filme.getId())).withSelfRel());
+            return filmeDto;
+        });
+    }
+    @GetMapping("{id}")
+    @Operation(description = "Encontrar filme específico por id.")
+    public ResponseEntity<FilmeResponseDto> findById(@PathVariable Long id) {
+        FilmeResponseDto filmeResponseDto = convertToDto(filmeService.findById(id));
+        filmeResponseDto.add(linkTo(methodOn(FilmeController.class).listAll(Pageable.unpaged())).withRel("Lista de filmes:"));
+        return ResponseEntity.ok(filmeResponseDto);
     }
 
     @DeleteMapping("{id}")
+    @Operation(description = "Deletar filme por id.")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") Long id){
         filmeService.delete(id);
     }
 
     @PutMapping("{id}")
+    @Operation(description = "Atualizar filme existente.")
     public ResponseEntity<FilmeResponseDto> update(@RequestBody FilmeRequestDto filmeRequestDto, @PathVariable("id") Long id){
         try{
             Filme update = filmeService.findById(id);
