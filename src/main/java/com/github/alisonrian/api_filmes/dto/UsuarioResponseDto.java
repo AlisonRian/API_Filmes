@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UsuarioResponseDto extends RepresentationModel<UsuarioResponseDto>{
+    private Long id;
     private String nome;
     private List<FilmeRequestDto> favoritos;
 }

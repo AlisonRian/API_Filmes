@@ -7,6 +7,7 @@ import com.github.alisonrian.api_filmes.dto.FilmeResponseDto;
 import com.github.alisonrian.api_filmes.dto.UsuarioResponseDto;
 import com.github.alisonrian.api_filmes.service.FilmeService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -23,7 +24,7 @@ import java.net.URI;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-
+@CrossOrigin(origins = "*")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/filmes/")
@@ -53,6 +54,20 @@ public class FilmeController {
             return filmeDto;
         });
     }
+    @GetMapping("filtrar")
+    @Operation(description = "Filtrar filmes pelo ano de lançamento.")
+    public Page<FilmeResponseDto> listByNome(@RequestParam (required = false) String nome,
+                                             @RequestParam (required = false) String genero,
+                                             @RequestParam (required = false) Integer anoLancamento,
+                                             Pageable pageable){
+        Page<Filme> filmePage = filmeService.filtrarFilmes(nome,genero,anoLancamento,pageable);
+        return filmePage.map(filme ->{
+            FilmeResponseDto filmeDto = convertToDto(filme);
+            filmeDto.add(linkTo(methodOn(FilmeController.class).findById(filme.getId())).withSelfRel());
+            return filmeDto;
+        });
+    }
+
     @GetMapping("{id}")
     @Operation(description = "Encontrar filme específico por id.")
     public ResponseEntity<FilmeResponseDto> findById(@PathVariable Long id) {
@@ -72,13 +87,15 @@ public class FilmeController {
     @Operation(description = "Atualizar filme existente.")
     public ResponseEntity<FilmeResponseDto> update(@RequestBody FilmeRequestDto filmeRequestDto, @PathVariable("id") Long id){
         try{
-            Filme update = filmeService.findById(id);
-        }catch(Exception e){
-            return this.create(filmeRequestDto);
+            Filme up = convertToEntity(filmeRequestDto);
+            up.setId(id);
+            Filme update = filmeService.update(up, id);
+            return ResponseEntity.ok(convertToDto(update));
+        }catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        Filme update = filmeService.update(convertToEntity(filmeRequestDto), id);
-        return ResponseEntity.ok(convertToDto(update));
     }
+
 
     public FilmeResponseDto convertToDto(Filme filme){
         return mapper.map(filme, FilmeResponseDto.class);

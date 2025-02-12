@@ -11,6 +11,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FilmeResponseDto extends RepresentationModel<FilmeResponseDto>{
+    private Long id;
     private String nome;
     private String genero;
     private String classificacao;
