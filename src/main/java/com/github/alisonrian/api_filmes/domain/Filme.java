@@ -39,5 +39,6 @@ public class Filme extends EntidadeAbstrata {
     private int anoLancamento;
 
     @Column(length = 500)
+    @Size(min = 5, message = "A imagem deve ser inserida.")
     private String imagemUri;
 }

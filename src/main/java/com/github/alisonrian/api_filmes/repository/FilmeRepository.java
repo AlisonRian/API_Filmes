@@ -11,8 +11,9 @@ import java.util.List;
 
 public interface FilmeRepository extends JpaRepository<Filme, Long> {
     Page<Filme> findByDeletedAtIsNull(Pageable pageable);
+
     @Query("SELECT f FROM Filme f WHERE " +
-            "(:nome IS NULL OR LOWER(f.nome) LIKE LOWER(CONCAT('%', :nome, '%'))) AND " +
+            "(COALESCE(:nome, '') = '' OR LOWER(f.nome) LIKE LOWER(CONCAT('%', :nome, '%'))) AND " +
             "(:anoLancamento IS NULL OR f.anoLancamento = :anoLancamento) AND " +
             "(:genero IS NULL OR f.genero = :genero)")
     Page<Filme> filtrarFilmes(@Param("nome") String nome,

@@ -2,7 +2,6 @@ package com.github.alisonrian.api_filmes.controller;
 
 import com.github.alisonrian.api_filmes.config.FileStorageProperties;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;

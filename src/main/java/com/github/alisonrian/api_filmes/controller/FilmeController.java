@@ -1,25 +1,28 @@
 package com.github.alisonrian.api_filmes.controller;
 
-import com.github.alisonrian.api_filmes.config.FileStorageProperties;
 import com.github.alisonrian.api_filmes.domain.Filme;
 import com.github.alisonrian.api_filmes.dto.FilmeRequestDto;
 import com.github.alisonrian.api_filmes.dto.FilmeResponseDto;
-import com.github.alisonrian.api_filmes.dto.UsuarioResponseDto;
 import com.github.alisonrian.api_filmes.service.FilmeService;
 import io.swagger.v3.oas.annotations.Operation;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -46,26 +49,37 @@ public class FilmeController {
 
     @GetMapping
     @Operation(description = "Listar todos os filmes cadastrados.")
-    public Page<FilmeResponseDto> listAll(Pageable pageable){
+    public ResponseEntity<Page<FilmeResponseDto>> listAll(Pageable pageable){
         Page<Filme> filmePage = filmeService.findAll(pageable);
-        return filmePage.map(filme ->{
-            FilmeResponseDto filmeDto = convertToDto(filme);
-            filmeDto.add(linkTo(methodOn(FilmeController.class).findById(filme.getId())).withSelfRel());
-            return filmeDto;
-        });
+        Page<FilmeResponseDto> response = filmePage.map(this::convertToDto);
+        return ResponseEntity.ok(response);
+//        return filmePage.map(filme ->{
+//            FilmeResponseDto filmeDto = convertToDto(filme);
+//            filmeDto.add(linkTo(methodOn(FilmeController.class).findById(filme.getId())).withSelfRel());
+//            return filmeDto;
+//        });
     }
     @GetMapping("filtrar")
     @Operation(description = "Filtrar filmes pelo ano de lançamento.")
-    public Page<FilmeResponseDto> listByNome(@RequestParam (required = false) String nome,
+    public ResponseEntity<Page<FilmeResponseDto>> listByNome(@RequestParam (required = false) String nome,
                                              @RequestParam (required = false) String genero,
                                              @RequestParam (required = false) Integer anoLancamento,
                                              Pageable pageable){
         Page<Filme> filmePage = filmeService.filtrarFilmes(nome,genero,anoLancamento,pageable);
-        return filmePage.map(filme ->{
-            FilmeResponseDto filmeDto = convertToDto(filme);
-            filmeDto.add(linkTo(methodOn(FilmeController.class).findById(filme.getId())).withSelfRel());
-            return filmeDto;
-        });
+        if (filmePage.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(filmePage.map(this::convertToDto));
+    }
+    @GetMapping("ordenar")
+    public ResponseEntity<Page<FilmeResponseDto>> orderBy(@RequestParam String coluna,
+                                          @RequestParam(defaultValue = "asc") String direcao,
+                                          Pageable pageable){
+        Sort sort = Sort.by(Sort.Direction.fromString(direcao), coluna);
+        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        Page<Filme> filmePage = filmeService.findAll(sortedPageable);
+        return ResponseEntity.ok(filmePage.map(this::convertToDto));
     }
 
     @GetMapping("{id}")
@@ -86,14 +100,10 @@ public class FilmeController {
     @PutMapping("{id}")
     @Operation(description = "Atualizar filme existente.")
     public ResponseEntity<FilmeResponseDto> update(@RequestBody FilmeRequestDto filmeRequestDto, @PathVariable("id") Long id){
-        try{
             Filme up = convertToEntity(filmeRequestDto);
             up.setId(id);
             Filme update = filmeService.update(up, id);
             return ResponseEntity.ok(convertToDto(update));
-        }catch(Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
     }
 
 

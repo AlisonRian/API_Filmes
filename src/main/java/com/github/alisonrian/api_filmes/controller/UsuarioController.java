@@ -3,7 +3,6 @@ package com.github.alisonrian.api_filmes.controller;
 import com.github.alisonrian.api_filmes.domain.Usuario;
 import com.github.alisonrian.api_filmes.dto.UsuarioRequestDto;
 import com.github.alisonrian.api_filmes.dto.UsuarioResponseDto;
-import com.github.alisonrian.api_filmes.service.FilmeService;
 import com.github.alisonrian.api_filmes.service.UsuarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
