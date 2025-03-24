@@ -10,24 +10,17 @@ import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
-@CrossOrigin(origins = "*")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/filmes/")
@@ -53,11 +46,6 @@ public class FilmeController {
         Page<Filme> filmePage = filmeService.findAll(pageable);
         Page<FilmeResponseDto> response = filmePage.map(this::convertToDto);
         return ResponseEntity.ok(response);
-//        return filmePage.map(filme ->{
-//            FilmeResponseDto filmeDto = convertToDto(filme);
-//            filmeDto.add(linkTo(methodOn(FilmeController.class).findById(filme.getId())).withSelfRel());
-//            return filmeDto;
-//        });
     }
     @GetMapping("filtrar")
     @Operation(description = "Filtrar filmes pelo ano de lançamento.")
@@ -72,15 +60,7 @@ public class FilmeController {
 
         return ResponseEntity.ok(filmePage.map(this::convertToDto));
     }
-    @GetMapping("ordenar")
-    public ResponseEntity<Page<FilmeResponseDto>> orderBy(@RequestParam String coluna,
-                                          @RequestParam(defaultValue = "asc") String direcao,
-                                          Pageable pageable){
-        Sort sort = Sort.by(Sort.Direction.fromString(direcao), coluna);
-        Pageable sortedPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-        Page<Filme> filmePage = filmeService.findAll(sortedPageable);
-        return ResponseEntity.ok(filmePage.map(this::convertToDto));
-    }
+
 
     @GetMapping("{id}")
     @Operation(description = "Encontrar filme específico por id.")
@@ -102,6 +82,10 @@ public class FilmeController {
     public ResponseEntity<FilmeResponseDto> update(@RequestBody FilmeRequestDto filmeRequestDto, @PathVariable("id") Long id){
             Filme up = convertToEntity(filmeRequestDto);
             up.setId(id);
+            if(up.getImagemUri().isEmpty()){
+                Filme f = filmeService.findById(id);
+                up.setImagemUri(f.getImagemUri());
+            }
             Filme update = filmeService.update(up, id);
             return ResponseEntity.ok(convertToDto(update));
     }

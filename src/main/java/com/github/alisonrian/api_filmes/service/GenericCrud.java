@@ -29,7 +29,6 @@ public abstract class GenericCrud<T, ID, REPO extends JpaRepository<T,ID>> imple
     public T update(T entity, ID id) {
         Optional<T> exists = repository.findById(id);
         if (exists.isPresent()) {
-
             return repository.saveAndFlush(entity);
         } else {
             throw new EntityNotFoundException("Entity not found");

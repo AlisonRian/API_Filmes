@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = SenhaValidator.class)
 public @interface SenhaValida {
-    String message() default "Senha inválida";
+    String message() default "Senha inválida - A senha deve ter ao menos 8 caracteres";
 
     Class<?>[] groups() default {};
 

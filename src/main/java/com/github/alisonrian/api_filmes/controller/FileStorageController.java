@@ -15,7 +15,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/images")
 public class FileStorageController {
