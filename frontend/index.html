@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CineAPI</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" href="images\favicon.ico" >
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="title-box">
+        <div id="title">
+            <h1 style="color: #F5F5F5;">Cine</h1>
+            <h1 style="color: #E50914; margin-right: 5px;">API</h1>
+            <img id="img-title" src="images\popcorn.png" style="width: 50px; height: 50px;"></img>
+        </div>
+        <div id="search">
+            <input type="search" name="pesquisar" class="form-control-sm" id="filtrarNome" placeholder="Pesquisar">
+            <button type="submit" onclick="pesquisarNome()" class="btn btn-custom btn-sm" style="margin-right: 5px;" title="Pesquisar">
+                <i class="bi bi-search"></i>
+            </button>
+            <button type="submit" onclick="filtros()" class="btn btn-custom btn-sm"  style="margin-right: 5px;" title="Filtrar">
+                <i class="bi bi-filter"></i>
+            </button>  
+            <button id="reset-filtros" type="submit" onclick="carregarFilmes()" class="btn btn-custom btn-sm" style="display: none;" title="Limpar filtros">
+                <i class="bi bi-arrow-counterclockwise"></i>
+            </button>    
+        </div>
+        <div id="login-div" >
+            <button type="submit" class="btn btn-custom btn-lg" style="border-radius: 10px;" onclick="window.location.href='login_page.html'" title="Login" id="login-btn">
+                <i class="bi bi-person-fill"></i>
+            </button>
+        </div>
+        <div id="logout-div">
+            <button type="submit" class="btn btn-custom btn-sm" id="logout-btn" style="border-radius: 10px; display: none;" onclick="logout()" title="Logout" id="logout-btn">
+                Logout
+            </button>
+        </div>
+        
+    </nav>
+
+    <div style="display: flex; justify-content: space-between; margin-right: 2%;">
+        <h2 style="color: #F5F5F5;">Lista de Filmes</h2>
+        <div id="add-btn" style="justify-content: end;" >
+            <button type="submit" class="btn btn-custom btn-sm" style="border-radius: 20px;" onclick="saveModal()" title="Adicionar novo filme">
+                <i class="bi bi-plus-lg"></i>
+                Add Filme
+            </button>
+        </div>
+    </div>
+
+    <div style="display: flex; text-align: center;">
+        <p style="color: #F5F5F5; margin-left: 10px;">Ordenar:</p>
+        <select class="form-select-sm" style="background-color: #1C1C1C; border: none; color: #F5F5F5; height: 25px;">
+            <option value="" style="color: #F5F5F5;">Mais recentes</option>
+        </select>  
+    </div>
+    <table class="table table-dark table-striped-columns table-hover w-100">
+        <thead>
+            <tr>
+                <th>Capa</th>
+                <th>Nome</th>
+                <th>Lançamento</th>
+                <th>Classificação</th>
+                <th>Sinopse</th>
+                <th>Gênero</th>
+                <th>Editar</th>
+                <th>Excluir</th>
+            </tr>
+        </thead>
+        <tbody id="produtosTable" class="table-group-divider"></tbody>
+    </table>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="modal-content">
+            </div>
+        </div>
+    </div>
+      
+
+    <script src="script.js"></script>
+    <script src="login.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
