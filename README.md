@@ -1,9 +1,11 @@
 # CineAPI
 
-CineAPI é uma API REST completa para gerenciamente de filmes, oferece as funcionalidades de cadastro, edição, exclusão, busca e filtragem dos filmes.
-Além disso, possui um sistema de segurança com registro e login, que permite aos usuários gerenciar suas contas.
-Os usuário também podem favoritar seus filmes preferidos. O sistema implementa roles de acesso, sendo ADMIN e USER, garantindo que permissões diferentes para cada tipo de
-usuário.
+CineAPI é uma API REST completa para gerenciamente de filmes, oferecendo funcionalidades como:
+ 📌 Cadastro, edição, exclusão, busca e filtragem de filmes.
+ 📌 Sistema de autenticação com registro e login.
+ 📌 Geração de **TOKEN JWT** no login, com tempo expiração.
+ 📌 Sistema de roles de acesso, com **user** e **admin**, que controlam as permissões do usuário.
+ 📌 Possibilidade do usuário favoritar seus filmes preferidos.
 
 ## 🚀 Tecnologias 
  - Java
