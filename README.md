@@ -21,7 +21,7 @@ CineAPI é uma API REST completa para gerenciamente de filmes, oferecendo funcio
 ![Cadastro](assets/CriarUser.jpg)
 ### Tela de Login - Tentativa de login inválida(senha incorreta).
 ![Login](assets/Login.jpg)
-### Tela inicial para usuário - User
+### Tela inicial para usuário - User  
 ![HomeUser](assets/homeUser.jpg)
 ### Tela inicial para usuário - Admin
 ![HomeAdmin](assets/homeAdmin.jpg)
@@ -33,5 +33,12 @@ CineAPI é uma API REST completa para gerenciamente de filmes, oferecendo funcio
 ![EditarFilme](assets/Editar.jpg)
 ### Filmes favoritados
 ![FavoritarFilme](assets/Favoritos.jpg)
-
+<br>
+## 📖 Como Rodar o Projeto
+1. Clone o projeto:
+```bash
+ git clone https://github.com/AlisonRian/API_Filmes.git
+```
+2. Configure o aplication.properties com suas credenciais do PostgreSQL.
+3. Rode o backend e o frontend separadamente.
 
