@@ -34,12 +34,12 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.GET, "/filmes/**", "/images/**", "/usuarios/**", "/auth/**").permitAll()
+                        request.requestMatchers(HttpMethod.GET, "/filmes/**", "/images/**", "/usuarios/**", "/auth/**","/swagger-ui/**").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/usuarios/**", "/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/filmes/**", "/images/upload").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "usuarios/favoritos/").hasRole("USER")
-                                .requestMatchers(HttpMethod.PUT, "/filmes/**").hasRole("ADMIN")  // Exemplo de PUT protegido
-                                .requestMatchers(HttpMethod.DELETE, "/filmes/**").hasRole("ADMIN")  // Exemplo de DELETE protegido
+                                .requestMatchers(HttpMethod.PUT, "/filmes/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/filmes/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(credentialsAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

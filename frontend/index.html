@@ -29,35 +29,39 @@
                 <i class="bi bi-arrow-counterclockwise"></i>
             </button>    
         </div>
-        <div id="login-div" >
-            <button type="submit" class="btn btn-custom btn-lg" style="border-radius: 10px;" onclick="window.location.href='login_page.html'" title="Login" id="login-btn">
+       
+        <div id="auth-btn">
+            <a href="favoritos.html">
+                <button id="fav-btn" type="submit" class="btn btn-custom btn-lg" style="padding: 10px; display: none;" onclick="carregarFavoritos()">
+                    <i class="bi bi-heart-fill"></i>
+                </button>
+            </a>
+            <button type="submit" class="btn btn-custom btn-lg" style="border-radius: 10px; display: block; padding: 10px;" onclick="window.location.href='login_page.html'" title="Login" id="login-btn">
                 <i class="bi bi-person-fill"></i>
             </button>
-        </div>
-        <div id="logout-div">
-            <button type="submit" class="btn btn-custom btn-sm" id="logout-btn" style="border-radius: 10px; display: none;" onclick="logout()" title="Logout" id="logout-btn">
-                Logout
+            <button type="submit" class="btn btn-custom btn-sm" id="logout-btn" style="border-radius: 10px; display: none; padding: 10px;" onclick="logout()" title="Logout" id="logout-btn">
+                <i class="bi bi-box-arrow-left"></i>
             </button>
         </div>
-        
+
     </nav>
 
     <div style="display: flex; justify-content: space-between; margin-right: 2%;">
         <h2 style="color: #F5F5F5;">Lista de Filmes</h2>
-        <div id="add-btn" style="justify-content: end;" >
-            <button type="submit" class="btn btn-custom btn-sm" style="border-radius: 20px;" onclick="saveModal()" title="Adicionar novo filme">
+        <div>
+            <button type="submit" class="btn btn-custom btn-sm" style="border-radius: 20px; margin-top: 20px;" onclick="saveModal()" title="Adicionar novo filme" id="add-btn">
                 <i class="bi bi-plus-lg"></i>
                 Add Filme
             </button>
         </div>
     </div>
 
-    <div style="display: flex; text-align: center;">
+    <!-- <div style="display: flex; text-align: center;">
         <p style="color: #F5F5F5; margin-left: 10px;">Ordenar:</p>
         <select class="form-select-sm" style="background-color: #1C1C1C; border: none; color: #F5F5F5; height: 25px;">
             <option value="" style="color: #F5F5F5;">Mais recentes</option>
         </select>  
-    </div>
+    </div> -->
     <table class="table table-dark table-striped-columns table-hover w-100">
         <thead>
             <tr>
@@ -67,8 +71,8 @@
                 <th>Classificação</th>
                 <th>Sinopse</th>
                 <th>Gênero</th>
-                <th>Editar</th>
-                <th>Excluir</th>
+                <th data-remame="Teste">Editar</th>
+                <th data-remove="true">Excluir</th>
             </tr>
         </thead>
         <tbody id="produtosTable" class="table-group-divider"></tbody>
@@ -80,8 +84,7 @@
             </div>
         </div>
     </div>
-      
-
+    
     <script src="script.js"></script>
     <script src="login.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

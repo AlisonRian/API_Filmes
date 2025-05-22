@@ -50,15 +50,10 @@ h3{
     width: 80%;              
     outline: none; 
 }
-#login-div{
+#auth-btn{
+    display: flex;
     padding: 20px;
-    display: flex !important;
-    justify-content: center !important;
-}
-#logout-div{
-    padding: 20px;
-    display: flex !important;
-    justify-content: center !important;
+    gap: 10px;
 }
 th{
     color: #F5F5F5;

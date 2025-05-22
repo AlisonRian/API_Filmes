@@ -21,12 +21,23 @@
                 <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
                 <input type="password" class="form-control" placeholder="Senha" id="login-senha">
             </div>
+            <span class="erro" id="erro-usuario"></span>
             <div style="display: flex; justify-content: center; margin-top: 20px; margin-bottom: 10px;">
                 <button type="submit" class="btn btn-custom btn-lg" style="border-radius: 10px; width: 100%;">
                     LOGIN
                 </button>
             </div>
             <p style="color: #F5F5F5; font-size: 12px; text-align: center; margin-top: 5%;">Não está registrado? <a href="register_page.html" style="color: #1F3B5F;">Cadastra-se</a></p>
+
+            <div style="display: flex; justify-content: space-evenly;">
+                <button type="submit" class="btn btn-custom btn-lg" title="Login com Admin" onclick="admin()">
+                    <i class="bi bi-person-gear"></i>
+                </button>
+    
+                <button type="submit" class="btn btn-custom btn-lg" title="Login com User" onclick="user()">
+                    <i class="bi bi-person"></i>
+                </button>
+            </div>
         </form>
     </div>
 

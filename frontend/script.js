@@ -1,36 +1,122 @@
-document.addEventListener("DOMContentLoaded", carregarFilmes);
+document.addEventListener("DOMContentLoaded", function() {
+    // carregarFilmes();
+    if (window.location.pathname === "/index.html") {
+        carregarFilmes();
+    } else if (window.location.pathname === "/favoritos.html") {
+        carregarFavoritos();
+    } 
+});
 let condicao = true;
+const url = "http://localhost:8080";
 function montarTbl(filmes){
+    console.log(sessionStorage.getItem('logado'));
     const tabela = document.getElementById("produtosTable");
     tabela.innerHTML = "";
-    listafilmes = filmes.content || [];
-    listafilmes.forEach(filme => {
-        tabela.innerHTML += `
-            <tr>
-                <td>
-                    <img src=${filme.imagemUri} 
-                    style="width: 100px; height: 100px;object-fit: contain; background-color:#1C1C1C;" >
-                </td>
-                <td>${filme.nome}</td>
-                <td>${filme.anoLancamento}</td>
-                <td>${filme.classificacao}</td>
-                <td>${filme.sinopse}</td>
-                <td>${filme.genero}</td>
-                <td style="text-align: center">
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="editarFilmes(${filme.id})" title="Editar">
-                        <i class="bi bi-pencil-fill"></i>
-                    </button>
-                </td>
-                <td style="text-align: center">
-                    <button class="btn btn-danger btn-sm" onclick="deletarFilmes(${filme.id})" title="Excluir">
-                        <i class="bi bi-trash-fill"></i>
-                    </button>
-                </td>
-            </tr>
-        `;
-    });
+    listafilmes = filmes.content || []; 
+    if(sessionStorage.getItem('role')==='ROLE_ADMIN'){
+        listafilmes.forEach(filme => {
+            tabela.innerHTML += `
+                <tr>
+                    <td>
+                        <img src=${filme.imagemUri} 
+                        style="width: 100px; height: 100px;object-fit: contain; background-color:#1C1C1C;" >
+                    </td>
+                    <td>${filme.nome}</td>
+                    <td>${filme.anoLancamento}</td>
+                    <td>${filme.classificacao}</td>
+                    <td>${filme.sinopse}</td>
+                    <td>${filme.genero}</td>
+                    <td style="text-align: center">
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="editarFilmes(${filme.id})" title="Editar">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+                    </td>
+                    <td style="text-align: center">
+                        <button class="btn btn-danger btn-sm" onclick="deletarFilmes(${filme.id})" title="Excluir">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+    }else{
+        if(sessionStorage.getItem('logado')==='true'){
+            document.querySelectorAll("th[data-remove]").forEach(th => th.remove());
+            let editar = document.querySelectorAll("th");
+            editar[6].textContent = "Favoritar";
+            listafilmes.forEach(filme => {
+                tabela.innerHTML += `
+                    <tr>
+                        <td>
+                            <img src=${filme.imagemUri} 
+                            style="width: 100px; height: 100px;object-fit: contain; background-color:#1C1C1C;" >
+                        </td>
+                        <td>${filme.nome}</td>
+                        <td>${filme.anoLancamento}</td>
+                        <td>${filme.classificacao}</td>
+                        <td>${filme.sinopse}</td>
+                        <td>${filme.genero}</td>
+                        <td style="text-align: center">
+                            <button type="button" class="btn btn-custom btn-sm"onclick="favoritar(${filme.id})" title="Adicionar aos favoritos">
+                                <i class="bi bi-heart-fill"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }else{
+            document.querySelectorAll("th[data-remove]").forEach(th => th.remove());
+            let editar = document.querySelectorAll("th");
+            editar[6].textContent = "Favoritar";
+            listafilmes.forEach(filme => {
+                tabela.innerHTML += `
+                    <tr>
+                        <td>
+                            <img src=${filme.imagemUri} 
+                            style="width: 100px; height: 100px;object-fit: contain; background-color:#1C1C1C;" >
+                        </td>
+                        <td>${filme.nome}</td>
+                        <td>${filme.anoLancamento}</td>
+                        <td>${filme.classificacao}</td>
+                        <td>${filme.sinopse}</td>
+                        <td>${filme.genero}</td>
+                        <td style="text-align: center">
+                            <button type="button" class="btn btn-custom btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Adicionar aos favoritos" disabled>
+                                <i class="bi bi-heart-fill"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        
+    }
+    
 }
 function editModal(filme){
+    let generos = ["Ação", "Aventura", "Comédia","Drama","Terror","Ficção Científica","Fantasia","Romance","Mistério","Suspense","Documentário","Musical","Histórico"];
+    let i =  generos.indexOf(filme.genero);
+    generos.splice(i,1);
+    gerarSelect = `
+                <select class="form-select" id="generoEdit">
+                    <option selected value=${filme.genero}>${filme.genero}</option>
+                `;
+    generos.forEach(g =>{
+        gerarSelect +=  `<option value=${g}>${g}</option>`
+    })
+    gerarSelect += "</select>";
+
+    let classificacao = ["Livre","10", "12", "14", "16", "18"];
+    let index = classificacao.indexOf(filme.classificacao);
+    classificacao.splice(index,1);
+    gerarSelectClas =  `<select class="form-select" id="classificacaoEdit">
+                            <option selected value="${filme.classificacao}">${filme.classificacao}</option>
+                        `
+    classificacao.forEach(c =>{
+        gerarSelectClas += `<option value=${c}>${c}</option>`
+    });
+    gerarSelectClas += "</select>";
+
     const gerarModal =  `
     <div class="modal-header">
     <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: #1C1C1C;" >Editar</h1>
@@ -43,37 +129,14 @@ function editModal(filme){
         <span class="erro" id="erro-anoLancamento"></span>
         <textarea id='sinopseEdit' class="form-control mb-2" placeholder="Sinopse" >${filme.sinopse}</textarea>
         <span class="erro" id="erro-sinopse"></span>
-    
         <div class="input-group mb-3">
             <label class="input-group-text" for="genero">Gênero</label>
-            <select class="form-select" id="generoEdit">
-                <option value="Ação">Ação</option>
-                <option value="Aventura">Aventura</option>
-                <option value="Comédia">Comédia</option>
-                <option value="Drama">Drama</option>
-                <option value="Terror">Terror</option>
-                <option value="Ficção Científica">Ficção Científica (Sci-Fi)</option>
-                <option value="Fantasia">Fantasia</option>
-                <option value="Romance">Romance</option>
-                <option value="Mistério">Mistério</option>
-                <option value="Suspense">Suspense</option>
-                <option value="Documentário">Documentário</option>
-                <option value="Animação">Animação</option>
-                <option value="Musical">Musical</option>
-                <option value="Histórico">Histórico</option>
-            </select>
+            ${gerarSelect}
         </div>
     
         <div class="input-group mb-3">
             <label class="input-group-text" for="classificacao">Classificação</label>
-            <select class="form-select" id="classificacaoEdit">
-                <option value="Livre">Livre</option>
-                <option value="10 anos">10 anos</option>
-                <option value="12 anos">12 anos</option>
-                <option value="14 anos">14 anos</option>
-                <option value="16 anos">16 anos</option>
-                <option value="18 anos">18 anos</option>
-            </select>
+            ${gerarSelectClas}
         </div>
 
         <input type="file" id="imagemUriEdit" class="form-control mb-2" placeholder="Capa" value="${filme.caminho}">
@@ -145,58 +208,77 @@ function saveModal(){
     myModal.show();
 }
 async function carregarFilmes() {
-    const response = await fetch("http://localhost:8080/filmes/");
+    const response = await fetch(url+"/filmes/");
     const filmes = await response.json();
     montarTbl(filmes);
     if (!condicao) {
         document.getElementById("reset-filtros").style.display = "none";
         condicao=true;
     }
-}
-async function carregarUsuarios() {
-    const response = await fetch("http://localhost:8080/filmes/");
-    const filmes = await response.json();
-    console.log(filmes);
+    if(sessionStorage.getItem('logado')==='true'){
+        document.getElementById("logout-btn").style.display = "block";
+        document.getElementById("login-btn").style.display = "none";
+        if(sessionStorage.getItem('role')!=='ROLE_ADMIN'){
+            document.getElementById("add-btn").style.display = "none";
+            document.getElementById("fav-btn").style.display = "block";
+        }
+    }else{
+        document.getElementById("logout-btn").style.display = "none";
+        document.getElementById("login-btn").style.display = "block";
+        document.getElementById("add-btn").style.display = "none";
+    }
 }
 async function pesquisarNome(){
-    let url = "http://localhost:8080/filmes/filtrar?";
+    let p_url = "http://localhost:8080/filmes/filtrar?";
     let nome = document.getElementById("filtrarNome").value;
-    url+= "nome="+encodeURIComponent(nome);
-    const response = await fetch(url);
-    const filmes = await response.json();
-    montarTbl(filmes);
-    if (condicao) {
-        document.getElementById("reset-filtros").style.display = "block";
-        condicao=false;
+    p_url+= "nome="+encodeURIComponent(nome);
+    const response = await fetch(p_url);
+    if(response.status!=200){
+        alert("Nenhum filme encontrado!");
+        carregarFilmes();
+    }else{
+        const filmes = await response.json();
+        montarTbl(filmes);
+        if (condicao) {
+            document.getElementById("reset-filtros").style.display = "block";
+            condicao=false;
+        }
     }
 }
 async function pesquisar() {
-    let url = "http://localhost:8080/filmes/filtrar?";
+    let p_url = "http://localhost:8080/filmes/filtrar?";
     let nome = document.getElementById("filtrarNome").value;
     if (nome && nome.trim() !== "") {
-        url += "nome=" + encodeURIComponent(nome) + "&";
+        p_url += "nome=" + encodeURIComponent(nome) + "&";
     }
     let ano = document.getElementById("filtrarAno").value;
     if (ano && ano.trim() !== "") {
-        url += "anoLancamento=" + encodeURIComponent(ano) + "&";
+        p_url += "anoLancamento=" + encodeURIComponent(ano) + "&";
     }
 
     let genero = document.getElementById("filtrarGenero").value;
     if (genero && genero.trim() !== "") {
-        url += "genero=" + encodeURIComponent(genero) + "&";
+        p_url += "genero=" + encodeURIComponent(genero) + "&";
     }
 
     if (url.endsWith("&")) {
-        url = url.slice(0, -1);
+        p_url = p_url.slice(0, -1);
     }
 
-    const response = await fetch(url);
-    const filmes = await response.json();
-    montarTbl(filmes);
-    if (condicao) {
-        document.getElementById("reset-filtros").style.display = "block";
-        condicao=false;
+    const response = await fetch(p_url);
+    console.log(response);
+    if(response.status!=200){
+        alert("Nenhum filme encontrado!");
+        carregarFilmes();
+    }else{
+        const filmes = await response.json();
+        montarTbl(filmes);
+        if (condicao) {
+            document.getElementById("reset-filtros").style.display = "block";
+            condicao=false;
+        }
     }
+    
     var modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
     modal.hide();
 }
@@ -239,10 +321,15 @@ async function filtros() {
     carregarFilmes();
 }
 async function deletarFilmes(id) {
-    await fetch("http://localhost:8080/filmes/"+id, {method: "DELETE"});
+    const token = localStorage.getItem('jwt_token');
+    await fetch(url+"/filmes/"+id, {
+    method: "DELETE",
+    headers: {
+         'Authorization': `Bearer ${token}`
+    }
+});
     carregarFilmes();
 }
-
 async function editarFilmes(id) {
     const response = await fetch("http://localhost:8080/filmes/"+id);
     const filme = await response.json();
@@ -261,7 +348,7 @@ async function salvarFilmes(){
     let formData = new FormData();
     formData.append("file", imagemUri.files[0]);
 
-    let response = await fetch("http://localhost:8080/images/upload", {
+    let response = await fetch(url+"/images/upload", {
         method: "POST",
         body: formData,
         headers: {
@@ -271,7 +358,7 @@ async function salvarFilmes(){
 
     caminho = await response.text();
 
-    let res = await fetch("http://localhost:8080/filmes/", {
+    let res = await fetch(url+"/filmes/", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -310,22 +397,26 @@ async function editSaveFilmes(id){
     let anoLancamento = document.getElementById("anoLancamentoEdit").value;
     let genero = document.getElementById("generoEdit").value;
     let classificacao = document.getElementById("classificacaoEdit").value;
-    
+    const token = localStorage.getItem('jwt_token');
     
     let formData = new FormData();
     formData.append("file", imagemUri.files[0]);
 
-    let response = await fetch("http://localhost:8080/images/upload", {
+    let response = await fetch(url+"/images/upload", {
         method: "POST",
-        body: formData
+        body: formData,
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
     });
 
     caminho = await response.text();
 
-    let res = await fetch("http://localhost:8080/filmes/"+id, {
+    let res = await fetch(url+"/filmes/"+id, {
         method: "PUT",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
             nome: nome,
@@ -354,4 +445,65 @@ async function editSaveFilmes(id){
         var modal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
         modal.hide();
     }
+}
+async function favoritar(id){
+    const token = localStorage.getItem("jwt_token");
+    fetch(url+"/usuarios/favoritos/"+id,{
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    carregarFavoritos();
+}
+async function removerFavorito(id){
+    const token = localStorage.getItem("jwt_token");
+    fetch(url+"/usuarios/favoritos/"+id,{
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        },
+    })
+    window.location.reload();
+}
+async function carregarFavoritos(){
+    const token = localStorage.getItem("jwt_token");
+    let response = await fetch(url+"/usuarios/favoritos",{
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${token}`
+        }
+    })
+
+    const filmes =  await response.json();
+    console.log(filmes);
+    let tbl = document.getElementById("favoritosTable");
+    tbl.innerHTML = "";
+    listafilmes = filmes.content || [];
+    document.querySelectorAll("th[data-remove]").forEach(th => th.remove());
+    let editar = document.querySelectorAll("th");
+    editar[6].textContent = "Favoritar";
+    listafilmes.forEach(filme => {
+        tbl.innerHTML += `
+            <tr>
+                <td>
+                    <img src=${filme.imagemUri} 
+                    style="width: 100px; height: 100px;object-fit: contain; background-color:#1C1C1C;" >
+                </td>
+                <td>${filme.nome}</td>
+                <td>${filme.anoLancamento}</td>
+                <td>${filme.classificacao}</td>
+                <td>${filme.sinopse}</td>
+                <td>${filme.genero}</td>
+                <td style="text-align: center">
+                    <button type="button" class="btn btn-custom btn-sm"onclick="removerFavorito(${filme.id})" title="Remover dos favoritos">
+                        <i class="bi bi-trash-fill"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
 }
